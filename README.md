@@ -1,4 +1,4 @@
-# IBIO830---Statistical-Project--Tiger_Milkweed_Butterflies(genus Danaus)
+# IBIO830 -- Tiger Milkweed Butterflies (genus Danaus) statistical project
 Group project for class IBIO830.  Contributors: Kate Skocelas and Julia Zheng. 
 
 Danaus.csv is the raw data including a hand-labelled column called 'phyenotype (metamorphosis stage)' (sorry for the spelling error) describing the phenotype of each butterfly image based on the metamorphic stage of the photographed butterfly. There are four stages labelled: egg, caterpillar, chrysalis, and (adult) butterfly.
