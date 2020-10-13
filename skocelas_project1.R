@@ -4,14 +4,9 @@
 # 1. Read in raw data
 setwd("~/Desktop/stats/Project1/IBIO830---Statistical-Project")
 butterfly_raw <- read.csv("Danaus.csv", header = TRUE)#,row.names=1)
-#butterfly_raw
-#str(butterfly_raw)
 
 # 2. clean data for next task
 butterfly_data <- butterfly_raw
-butterfly_data <- butterfly_data[!is.na(butterfly_data$latitude),]
-butterfly_data <- butterfly_data[!is.na(butterfly_data$longitude),]
-butterfly_data <- butterfly_data[!is.na(butterfly_data$scientific_name),]
 butterfly_data <- butterfly_data[!is.na(butterfly_data$phyenotype..metamorphosis.stage.),]
 
 # 3. Explore data with basic plots
