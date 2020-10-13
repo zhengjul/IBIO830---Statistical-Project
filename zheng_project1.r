@@ -31,8 +31,8 @@ pdf("Danaus_observed_across_the_world.pdf")
 if (!require(rworldmap)) install.packages('rworldmap')
 library(rworldmap)
 plot(getMap(), 
-     xlab = "Latitude",     
-     ylab = "Longitude",     
+     xlab = "Longitude",     
+     ylab = "Latitude",     
      main = 'Genus Danaus (Tiger MilkWeed Butterfly) Observed Across the World')
 #add points from our dataset
 library(scales)
