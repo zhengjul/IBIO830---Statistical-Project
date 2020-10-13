@@ -22,3 +22,18 @@ ggplot(butterfly_data, aes(x=phyenotype..metamorphosis.stage.))+
   geom_bar(col="Black", fill="Navy")+
   labs(x="Metamorphic Stage", y="Number of Samples", title="Metamorphic Stage of Samples")+
   theme_classic()
+
+#TODO plot stage against date of observation
+butterfly_data$month <- substr(butterfly_data$observed_on, 1,2)
+
+month <- butterfly_data$month
+month_fixed <- vector()
+for(i in month){
+  month <- i
+  last_letter <- substr(month, 2,2)
+  if (last_letter == "/") {
+    month <- substr(month, 1,1)
+  }
+  append(month_fixed, month)
+}
+print(month_fixed) #FIXME outputs 'logical(0)'
