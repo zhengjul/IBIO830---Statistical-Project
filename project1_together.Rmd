@@ -1,0 +1,79 @@
+---
+title: "Project1"
+author: "Julia Zheng, Kate Skocelas"
+date: "10/15/2020"
+output:  
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r input files, echo=FALSE}
+setwd("C:\\Dropbox\\Classes\\Classes\\IBIO 830 stats\\project1")
+butterfly_raw <- read.csv("Danaus.csv", header = TRUE)#,row.names=1)
+str(butterfly_raw)
+```
+
+# Clean data for next task
+
+You can also embed plots, for example:
+
+```{r clean data for analysis 1, echo=TRUE}
+
+butterfly_data <- butterfly_raw
+butterfly_data <- butterfly_data[!is.na(butterfly_data$latitude),]
+butterfly_data <- butterfly_data[!is.na(butterfly_data$longitude),]
+butterfly_data <- butterfly_data[!is.na(butterfly_data$scientific_name),]
+
+```
+
+# Let's look at species distribution across the world in our dataset
+### Adding colours qualitatively with a library
+```{r}
+
+if (!require(RColorBrewer)) install.packages('RColorBrewer')
+library(RColorBrewer)
+butterfly_data$scientific_name <- as.factor(butterfly_data$scientific_name)
+jColors <- with(butterfly_data,
+                data.frame(scientific_name = levels(scientific_name),
+                           color = I(brewer.pal(nlevels(scientific_name), name = 'Accent'))))
+
+butterfly_data_scatter <- data.frame(subset(butterfly_data, select = c(latitude, longitude, scientific_name)),
+           matchRetVal = match(butterfly_data$scientific_name, jColors$scientific_name))
+```
+
+### plot world map
+```{r}
+#pdf("Danaus_observed_across_the_world.pdf")
+if (!require(rworldmap)) install.packages('rworldmap')
+library(rworldmap)
+plot(getMap(), 
+     xlab = "Longitude",     
+     ylab = "Latitude",     
+     main = 'Genus Danaus (Tiger MilkWeed Butterfly) Observed Across the World')
+library(scales)
+points(butterfly_data_scatter$longitude, butterfly_data_scatter$latitude, 
+       col=alpha(jColors$color[match(butterfly_data_scatter$scientific_name, jColors$scientific_name)],0.4), 
+       pch=19,cex=1)
+par(xpd=TRUE)
+legend(x = 'bottomright', inset=c(-0.5,0),
+       legend = as.character(jColors$scientific_name),
+       col = jColors$color, pch = 19, bty = 'n', cex=0.7)
+#dev.off()
+```
+
+### Add in coloured points from out butterfly dataset
+```{r}
+
+```
+
+
