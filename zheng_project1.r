@@ -31,8 +31,8 @@ pdf("Danaus_observed_across_the_world.pdf")
 if (!require(rworldmap)) install.packages('rworldmap')
 library(rworldmap)
 plot(getMap(), 
-     xlab = "Latitude",     
-     ylab = "Longitude",     
+     xlab = "Longitude",     
+     ylab = "Latitude",     
      main = 'Genus Danaus (Tiger MilkWeed Butterfly) Observed Across the World')
 #add points from our dataset
 library(scales)
@@ -43,6 +43,9 @@ legend(x = 'bottomright',
        legend = as.character(jColors$scientific_name),
        col = jColors$color, pch = 19, bty = 'n', cex=0.7)
 dev.off()
+# The pdf figure looks like there is a concentration of observations from the US, in particular species Danaus plexippus. 
+# Additionally, there is a lack thereof from the Eastern continents in the world. 
+# Even with this great disparity in available data, we can still observe differences in Danaus species (visual colour differences) spread across the globe.
 
 # SECTION 2: statistical chi-squared goodness of fit -------------------------------------------
 #Testing the Chi-squared goodness of fit on our categorical data describing the 4 metamorphic stage of genus Danaus butterflies
