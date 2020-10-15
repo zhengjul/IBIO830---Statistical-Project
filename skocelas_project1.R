@@ -15,10 +15,10 @@ library(dplyr)
 library(ggplot2)
 
 # Create bar plot of metamorphic stage
-#ggplot(butterfly_data, aes(x=phyenotype..metamorphosis.stage.))+
-#  geom_bar(col="Black", fill="Navy")+
-#  labs(x="Metamorphic Stage", y="Number of Samples", title="Metamorphic Stage of Samples")+
-#  theme_classic()
+ggplot(butterfly_data, aes(x=phyenotype..metamorphosis.stage.))+
+  geom_bar(col="Black", fill="Navy")+
+  labs(x="Metamorphic Stage", y="Number of Samples", title="Metamorphic Stage of Samples")+
+  theme_classic()
 
 #plot stage against date of observation
 butterfly_data$month <- substr(butterfly_data$observed_on, 1,2)

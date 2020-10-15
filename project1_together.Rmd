@@ -26,6 +26,8 @@ butterfly_data <- butterfly_raw
 butterfly_data <- butterfly_data[!is.na(butterfly_data$latitude),]
 butterfly_data <- butterfly_data[!is.na(butterfly_data$longitude),]
 butterfly_data <- butterfly_data[!is.na(butterfly_data$scientific_name),]
+butterfly_data <- butterfly_data[!is.na(butterfly_data$phyenotype..metamorphosis.stage.),]
+butterfly_data <- butterfly_data[!is.na(butterfly_data$observed_on),]
 # Rename column where there is a typo 
 names(butterfly_data)[names(butterfly_data) == "phyenotype..metamorphosis.stage."] <- "metamorphosis_stage"
 
