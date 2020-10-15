@@ -12,7 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r input files, echo=FALSE}
-setwd("C:\\Dropbox\\Classes\\Classes\\IBIO 830 stats\\project1")
+#setwd("C:\\Dropbox\\Classes\\Classes\\IBIO 830 stats\\project1")
+setwd("~/Desktop/stats/Project1/IBIO830---Statistical-Project")
 butterfly_raw <- read.csv("Danaus.csv", header = TRUE)#,row.names=1)
 str(butterfly_raw)
 ```
