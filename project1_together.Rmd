@@ -12,29 +12,12 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r input files, echo=FALSE}
-#setwd("C:\\Dropbox\\Classes\\Classes\\IBIO 830 stats\\project1")
-setwd("~/Desktop/stats/Project1/IBIO830---Statistical-Project")
+setwd("C:\\Dropbox\\Classes\\Classes\\IBIO 830 stats\\project1")
 butterfly_raw <- read.csv("Danaus.csv", header = TRUE)#,row.names=1)
 str(butterfly_raw)
-```
-
-## Clean data for Section 1 plotting
-
-```{r clean data for analysis 1, echo=TRUE}
-#For section 1 plot, save only the necessary columns to a new dataframe and remove NA's
-butterfly_data <- butterfly_raw
-butterfly_data <- butterfly_data[!is.na(butterfly_data$latitude),]
-butterfly_data <- butterfly_data[!is.na(butterfly_data$longitude),]
-butterfly_data <- butterfly_data[!is.na(butterfly_data$scientific_name),]
-butterfly_data <- butterfly_data[!is.na(butterfly_data$phyenotype..metamorphosis.stage.),]
-butterfly_data <- butterfly_data[!is.na(butterfly_data$observed_on),]
 # Rename column where there is a typo 
-names(butterfly_data)[names(butterfly_data) == "phyenotype..metamorphosis.stage."] <- "metamorphosis_stage"
-
+names(butterfly_raw)[names(butterfly_raw) == "phyenotype..metamorphosis.stage."] <- "metamorphosis_stage"
 ```
-
-## SECTION 1: Species distribution across the world
-### Adding colours qualitatively with a library
 ```{r load libraries, message=FALSE}
 if (!require(RColorBrewer)) install.packages('RColorBrewer')
 library(RColorBrewer)
@@ -42,7 +25,62 @@ if (!require(rworldmap)) install.packages('rworldmap')
 library(rworldmap)
 if (!require(scales)) install.packages('scales')
 library(scales)
+if (!require(dplyr)) install.packages('dplyr')
+library(dplyr)
 ```
+## Clean and explore data 
+
+```{r clean data for analysis 1, echo=TRUE}
+butterfly_data <- butterfly_raw
+butterfly_data <- butterfly_data[!is.na(butterfly_data$latitude),]
+butterfly_data <- butterfly_data[!is.na(butterfly_data$longitude),]
+butterfly_data <- butterfly_data[!is.na(butterfly_data$scientific_name),]
+
+
+```
+
+### Explore data: Plot positional accuracy against latitude and longitude
+```{r fig.width=14, fig.height=7}
+
+par(mfrow=c(1,2))
+butterfly_data <- butterfly_data[!is.na(butterfly_data$positional_accuracy),]
+plot(butterfly_data$positional_accuracy ~butterfly_data$latitude, 
+     xlab = "Latitude", 
+     ylab = "Positional Accuracy", 
+     pch = 19, 
+     col = adjustcolor(1,0.4),
+     main = "Positional accuracy vs Latitude")
+plot(butterfly_data$positional_accuracy ~butterfly_data$longitude, 
+     xlab = "Longitude", 
+     ylab = "Positional Accuracy", 
+     pch = 19, 
+     col = adjustcolor(1,0.4),
+     main = "Positional accuracy vs Longitude")
+```
+
+Ok, there are few outliers we have to remove. Let's do that before plotting!
+
+```{r fig.width=14, fig.height=7}
+butterfly_data <- butterfly_data %>% filter(positional_accuracy < 15000)
+par(mfrow=c(1,2))
+butterfly_data <- butterfly_data[!is.na(butterfly_data$positional_accuracy),]
+plot(butterfly_data$positional_accuracy ~butterfly_data$latitude, 
+     xlab = "Latitude", 
+     ylab = "Positional Accuracy", 
+     pch = 19, 
+     col = adjustcolor(1,0.4),
+     main = "Positional accuracy vs Latitude")
+plot(butterfly_data$positional_accuracy ~butterfly_data$longitude, 
+     xlab = "Longitude", 
+     ylab = "Positional Accuracy", 
+     pch = 19, 
+     col = adjustcolor(1,0.4),
+     main = "Positional accuracy vs Longitude")
+```
+
+## SECTION 1: Species distribution across the world
+### Adding colours qualitatively with a library
+
 
 ```{r}
 butterfly_data$scientific_name <- as.factor(butterfly_data$scientific_name)
