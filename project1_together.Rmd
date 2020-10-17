@@ -59,14 +59,14 @@ butterfly_data <- butterfly_data[!is.na(butterfly_data$metamorphosis_stage),]
 butterfly_data <- butterfly_data[!is.na(butterfly_data$observed_on),]
 ```
 
-## Initial plotting
+### Initial plotting
 ```{r look at structure}
 # look at the structure of the data frame
 str(butterfly_raw)
 head(butterfly_raw)
 ```
 
-### Metamorphic stage of samples
+#### Metamorphic stage of samples
 ```{r plot metamorphic stage}
 # Create bar plot of metamorphic stage
 ggplot(butterfly_data, aes(x=metamorphosis_stage))+
@@ -76,9 +76,8 @@ ggplot(butterfly_data, aes(x=metamorphosis_stage))+
 ```
 
 There are significantly more samples of organisms in the "butterfly" metamorphic stage than in any of the other metamorphic stages. This may represent a sampling bias in the dataset. Individuals in the "butterfly" stage may be easier for amatuer naturalists to spot or more appealing to photograph and log. In the statistical tests section, we use a chi-squared goodnesss of fit test to test the null hypothesis that our data set does not accurately represent the expected average lifecyle durations of genus Danaus butterflies.
-#FIXME Julia - does this paragraph look correct to you? Please make any changes you feel are needed.
 
-### Metamorphic stage of sample compared to observation date
+#### Metamorphic stage of sample compared to observation date
 ```{r metamorphic stage vs date observed}
 
 #plot stage against date of observation
@@ -103,7 +102,7 @@ ggplot(butterfly_data, aes(x=month, fill=phenotype))+
 
 #FIXME Kate/Julia what to say about this plot? What does it tell us?
 
-### Positional accuracy vs. latitude and longitude
+#### Positional accuracy vs. latitude and longitude
 ```{r plot positional accuracy vs lat & long, fig.width=14, fig.height=7}
 
 par(mfrow=c(1,2))
