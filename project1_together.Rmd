@@ -104,6 +104,7 @@ ggplot(butterfly_data, aes(x=month, fill=phenotype))+
 #FIXME Kate/Julia what to say about this plot? What does it tell us?
 
 ### Positional accuracy vs. latitude and longitude
+Positional accuracy in INaturalist describes how far away the submitted observations are from the recorded location (longitude, latitude). This value represents meters away from the recorded location. Therefore, it is important for us to take a look at whether our longitude latitude information are accurate to where the genus Danaus was observed in nature and drop the outliers with extremely poor accuracy (AKA large positional accuracy values). 
 ```{r plot positional accuracy vs lat & long, fig.width=14, fig.height=7}
 
 par(mfrow=c(1,2))
@@ -124,8 +125,8 @@ plot(butterfly_data$positional_accuracy ~butterfly_data$longitude,
 
 ```
 
-There are few outliers we have to remove. We do that and replot the data.
-#FIXME Julia - Should say why we need to remove the outliers here? 
+There are some outliers in our data, in particular in the datapoints that contain latitude or longitude greater than 30000 meteres away from actual observations. We decided to clean the data more thoroughly and remove any data points that are 15000 meters away from the recorded location.
+
 
 ```{r plot positional accuracy vs lat & long w/o outliers, fig.width=14, fig.height=7}
 
@@ -148,8 +149,7 @@ plot(butterfly_data$positional_accuracy ~butterfly_data$longitude,
      col = adjustcolor(1,0.4),
      main = "Positional accuracy vs Longitude")
 ```
-
-#FIXME Julia - I think we need to say what these corrected plots tell us, but I'm not sure what they tell us?
+As we can see, the y-axis has changed from 30000 to 12000 meters, which is a significant improvement of maximum positional accuracy present in our dataset. We are more certain of our dataset's longitude and latitude values is reasonably close to actual observation location.
 
 
 ### Species distribution across the world
@@ -218,5 +218,23 @@ Thus, I conclude that our observed dataset for genus Danaus matches with the pro
 #FIXME Kate - figure out what would make sense & do it.
 
 ## Summary of Results
-#FIXME Kate/Julia fill in 
+
+This dataset on genus Danaus contains interesting observations of metamorphosis stages across the world over various months in the year.
+
+We plotted 'Metamophoric stage of samples" to explore the dataset and astoundingly, the vast majority of samples were observed adult butterflies rather than in other stages of the butterfly life cycle.Thus, we conducted a chi-squared test on the categorical variable 'metamorphosis_stage' to determine whether the data observations match with the predicted durations of each metamorphosis stage.
+
+Based on the statistical test, 'Chi-squared goodness of fit test', our p-value 2.2e-16 < 0.005, meaning this test strongly rejects the null hypothesis of no fit.
+Thus, We conclude that our observed dataset for genus Danaus matches with the provided, predicted average butterfly lifecycle durations.
+
+Our data analysis has found that the greatest number of recorded observations occur around months 7 to 10 (July to October), with greatest number of records from August. 
+
+# FIXME -- if statistical test on this works out please fill in the conclusion here!
+
+Our dataset contained some outliers with respect to positional accuracy, seen in plots from 'Positional accuracy vs. latitude and longitude'. In INaturalist, positional accuracy describes how far away in meters was the observed butterfly compared to the actual recorded longitude and latitude values. Therefore, we want to remove outliers that are too far away from recorded location. 
+
+After removing the outliers using positional accuracy as criteria, we plotted 'Species distribution across the world'. We see that there is a concentration of observations from the USA. Additionally, there is a lack thereof from the eastern continents in the world. Even with this great disparity in available data, we can still observe differences in Danaus species (visual colour differences) spread across the globe.
+
+The species that is most recorded is species Danaus plexippus. However, due to sparcity of data collected, we are unable to acertain whether this is an artifact of biased sampling or if there are more Danaus plexippus in the world compared to all other genus Danaus species.
+
+In future works, we hope to include more samples from all across the world to reduce sampling bias.
 
