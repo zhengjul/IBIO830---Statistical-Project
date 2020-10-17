@@ -240,25 +240,24 @@ Above, we suggested that the bimodal distribution of observations by month may b
 lr <- lm(butterfly_data$month~butterfly_data$latitude)
 summary(lr)
 ```
-Based on the results of the linear regression, we can reject the null hypothesis that here is no significant correlation between observation month and latitude.
+Based on the results of the linear regression, we cannot reject the null hypothesis that here is no significant correlation between observation month and latitude. Our p-value of 0.236 is > 0.05. 
 
 ## Summary of Results
 This dataset on genus Danaus contains interesting observations of metamorphosis stages across the world over various months in the year.
 
-We plotted 'Metamophoric stage of samples" to explore the dataset and astoundingly, the vast majority of samples were observed adult butterflies rather than in other stages of the butterfly life cycle.Thus, we conducted a chi-squared test on the categorical variable 'metamorphosis_stage' to determine whether the data observations match with the predicted durations of each metamorphosis stage.
+We plotted 'Metamophoric stage of samples" to explore the dataset and astoundingly, the vast majority of samples were observed adult butterflies rather than in other stages of the butterfly life cycle. Thus, we conducted a chi-squared test on the categorical variable 'metamorphosis_stage' to determine whether the data observations match with the predicted durations of each metamorphosis stage.
 
 Based on the statistical test, 'Chi-squared goodness of fit test', our p-value 2.2e-16 < 0.005, meaning this test strongly rejects the null hypothesis of no fit.
-Thus, We conclude that our observed dataset for genus Danaus matches with the provided, predicted average butterfly lifecycle durations.
+Thus, we conclude that our observed dataset for genus Danaus matches with the provided, predicted average butterfly lifecycle durations.
 
 Our data analysis has found that the greatest number of recorded observations occur around months 7 to 10 (July to October), with greatest number of records from August.
+Additionally, the observations appear to have a bimodal distribution, with the first peak in March and the second peak in August. We hypothesized that these two distributions indicate the peak butterfly seasons in two differenct climates. 
 
-# FIXME -- if statistical test on this works out please fill in the conclusion here!
+Because butterflies are most abundant in warm weather, we tested the null hypothesis that there is no significant correlation between observation month and latitude. Based on the results of the linear regression, we cannot reject the null hypothesis, because our p-value of 0.236 is > 0.05. This does not mean that latitude has no effect on observation month, only that it does not have a significant effect on it.
 
-Our dataset contained some outliers with respect to positional accuracy, seen in plots from 'Positional accuracy vs. latitude and longitude'. In INaturalist, positional accuracy describes how far away in meters was the observed butterfly compared to the actual recorded longitude and latitude values. Therefore, we want to remove outliers that are too far away from recorded location.
+Our dataset contained some outliers with respect to positional accuracy, seen in plots from 'Positional accuracy vs. latitude and longitude'. In iNaturalist, positional accuracy describes how far away in meters the observed butterfly was compared to the actual recorded longitude and latitude values. Therefore, we want to remove outliers that are too far away from the recorded location.
 
 After removing the outliers using positional accuracy as criteria, we plotted 'Species distribution across the world'. We see that there is a concentration of observations from the USA. Additionally, there is a lack thereof from the eastern continents in the world. Even with this great disparity in available data, we can still observe differences in Danaus species (visual colour differences) spread across the globe.
 
-The species that is most recorded is species Danaus plexippus. However, due to sparcity of data collected, we are unable to acertain whether this is an artifact of biased sampling or if there are more Danaus plexippus in the world compared to all other genus Danaus species.
-
-In future works, we hope to include more samples from all across the world to reduce sampling bias.
+The species that is most recorded is Danaus plexippus. However, due to sparcity of data collected, we are unable to acertain whether this is an artifact of biased sampling or if there are more Danaus plexippus in the world compared to all other genus Danaus species. In future works, we hope to include more samples from all across the world to reduce sampling bias.
 
