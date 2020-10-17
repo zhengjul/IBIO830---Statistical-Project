@@ -1,6 +1,6 @@
 ---
-title: "Project1"
-author: "Julia Zheng, Kate Skocelas"
+title: "Tiger Milkweed Butterflies (genus Danaus) Statistical Project"
+author: "Julia Zheng & Kate Skocelas"
 date: "10/15/2020"
 output:  
   html_document:
@@ -11,65 +11,110 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r input files, echo=FALSE}
-setwd("C:\\Dropbox\\Classes\\Classes\\IBIO 830 stats\\project1")
-butterfly_raw <- read.csv("Danaus.csv", header = TRUE)#,row.names=1)
-str(butterfly_raw)
-# Rename column where there is a typo 
-names(butterfly_raw)[names(butterfly_raw) == "phyenotype..metamorphosis.stage."] <- "metamorphosis_stage"
+## Read in raw data
+```{r input files}
+#setwd("C:\\Dropbox\\Classes\\Classes\\IBIO 830 stats\\project1")
+setwd("~/Desktop/stats/Project1/IBIO830---Statistical-Project")
+
+# load raw data from csv file
+butterfly_raw <- read.csv("Danaus.csv", header = TRUE)
 ```
+
+### Load required libraries
 ```{r load libraries, message=FALSE}
 if (!require(RColorBrewer)) install.packages('RColorBrewer')
 library(RColorBrewer)
+
 if (!require(rworldmap)) install.packages('rworldmap')
 library(rworldmap)
+
 if (!require(scales)) install.packages('scales')
 library(scales)
+
 if (!require(dplyr)) install.packages('dplyr')
 library(dplyr)
-```
-## Clean and explore data 
 
-```{r clean data for analysis 1, echo=TRUE}
+if (!require(ggplot2)) install.packages('ggplot2')
+library(ggplot2)
+```
+
+
+## Data cleaning and exploration
+
+```{r clean data, echo=TRUE}
+
+# Rename column where there is a typo 
+names(butterfly_raw)[names(butterfly_raw) == "phyenotype..metamorphosis.stage."] <- "metamorphosis_stage"
+
+# check for NAs in the data
+sum(is.na(butterfly_raw)) # 132 NAs found 
+
+# Remove NAs in the data columns we are looking at
 butterfly_data <- butterfly_raw
 butterfly_data <- butterfly_data[!is.na(butterfly_data$latitude),]
 butterfly_data <- butterfly_data[!is.na(butterfly_data$longitude),]
+butterfly_data <- butterfly_data[!is.na(butterfly_data$positional_accuracy),]
 butterfly_data <- butterfly_data[!is.na(butterfly_data$scientific_name),]
-
-
+butterfly_data <- butterfly_data[!is.na(butterfly_data$metamorphosis_stage),]
+butterfly_data <- butterfly_data[!is.na(butterfly_data$observed_on),]
 ```
 
-### Explore data: Plot positional accuracy against latitude and longitude
-```{r fig.width=14, fig.height=7}
+## Initial plotting
+```{r look at structure}
+# look at the structure of the data frame
+str(butterfly_raw)
+head(butterfly_raw)
+```
+
+### Metamorphic stage of samples
+```{r plot metamorphic stage}
+# Create bar plot of metamorphic stage
+ggplot(butterfly_data, aes(x=metamorphosis_stage))+
+  geom_bar(col="black", fill= c("turquoise2", "darkorchid4", "orange2", "red"))+
+  labs(x="Metamorphic Stage", y="Number of Samples", title="Metamorphic Stage of Samples")+
+  theme_classic()
+```
+There are significantly more samples of organisms in the "butterfly" metamorphic stage than in any of the other metamorphic stages. This may represent a sampling bias in the dataset. Individuals in the "butterfly" stage may be easier for amatuer naturalists to spot or more appealing to photograph and log. In the statistical tests section, we use a chi-squared goodnesss of fit test to test the null hypothesis that our data set does not accurately represent the expected average lifecyle durations of genus Danaus butterflies.
+#FIXME Julia - does this paragraph look correct to you? Please make any changes you feel are needed.
+
+### Positional accuracy vs. latitude and longitude
+```{r plot positional accuracy vs lat & long, fig.width=14, fig.height=7}
 
 par(mfrow=c(1,2))
-butterfly_data <- butterfly_data[!is.na(butterfly_data$positional_accuracy),]
+
 plot(butterfly_data$positional_accuracy ~butterfly_data$latitude, 
      xlab = "Latitude", 
      ylab = "Positional Accuracy", 
      pch = 19, 
      col = adjustcolor(1,0.4),
-     main = "Positional accuracy vs Latitude")
+     main = "Positional Accuracy vs Latitude")
+
 plot(butterfly_data$positional_accuracy ~butterfly_data$longitude, 
      xlab = "Longitude", 
      ylab = "Positional Accuracy", 
      pch = 19, 
      col = adjustcolor(1,0.4),
-     main = "Positional accuracy vs Longitude")
+     main = "Positional Accuracy vs Longitude")
+
 ```
 
-Ok, there are few outliers we have to remove. Let's do that before plotting!
+There are few outliers we have to remove. We do that and replot the data.
+#FIXME Julia - Should say why we need to remove the outliers here? 
 
-```{r fig.width=14, fig.height=7}
+```{r plot positional accuracy vs lat & long w/o outliers, fig.width=14, fig.height=7}
+
+# remove outliers
 butterfly_data <- butterfly_data %>% filter(positional_accuracy < 15000)
+
 par(mfrow=c(1,2))
-butterfly_data <- butterfly_data[!is.na(butterfly_data$positional_accuracy),]
+
 plot(butterfly_data$positional_accuracy ~butterfly_data$latitude, 
      xlab = "Latitude", 
      ylab = "Positional Accuracy", 
      pch = 19, 
      col = adjustcolor(1,0.4),
      main = "Positional accuracy vs Latitude")
+
 plot(butterfly_data$positional_accuracy ~butterfly_data$longitude, 
      xlab = "Longitude", 
      ylab = "Positional Accuracy", 
@@ -78,11 +123,13 @@ plot(butterfly_data$positional_accuracy ~butterfly_data$longitude,
      main = "Positional accuracy vs Longitude")
 ```
 
-## SECTION 1: Species distribution across the world
+#FIXME Julia - I think we need to say what these corrected plots tell us, but I'm not sure what they tell us?
+
+
+## Species distribution across the world
+
 ### Adding colours qualitatively with a library
-
-
-```{r}
+```{r add colours qualitatively}
 butterfly_data$scientific_name <- as.factor(butterfly_data$scientific_name)
 jColors <- with(butterfly_data,
                 data.frame(scientific_name = levels(scientific_name),
@@ -93,7 +140,7 @@ butterfly_data_scatter <- data.frame(subset(butterfly_data, select = c(latitude,
 ```
 
 ### Plot points onto world map
-```{r fig.width=14, fig.height=9}
+```{r plot points onto world map, fig.width=14, fig.height=9}
 
 plot(getMap(), 
      xlab = "Longitude",     
@@ -110,12 +157,13 @@ legend("bottom", inset=c(0,0),
        xpd=TRUE, horiz=T)
 ```
 
-The pdf figure looks like there is a concentration of observations from the US, in particular species Danaus plexippus. 
-Additionally, there is a lack thereof from the Eastern continents in the world. 
+There is a concentration of observations from the USA, in particular species Danaus plexippus. 
+Additionally, there is a lack thereof from the eastern continents in the world. 
 Even with this great disparity in available data, we can still observe differences in Danaus species (visual colour differences) spread across the globe.
 
-## SECTION 2: statistical chi-squared goodness of fit 
-Testing the Chi-squared goodness of fit on our categorical data describing the 4 metamorphic stage of genus Danaus butterflies.
+## Statistical tests
+### Chi-squared goodness of fit test
+We conducted a Chi-squared goodness of fit on our categorical data describing the 4 metamorphic stage of genus Danaus butterflies.
 
 From the following link, I learned about average duration of butterflies' metamorphic stages. 
 #https://www.joyfulbutterfly.com/life-cycle-of-a-butterfly/
@@ -134,9 +182,8 @@ Adult butterfly:   2.5 weeks = 17.5 days               17.5/57.5 = 0.3043478
 
 Total lifecycle:   5+24.5+10.5+17.5 = 57.5 days
 </pre>
-```{r}
+```{r chi-squared test}
 chisq.test(table(butterfly_data$metamorphosis_stage), p = c(5, 24.5, 10.5, 17.5)/57.5)
-
 ```
 Based on the chi-square goodness of fit test, our p-value 2.2e-16 < 0.005, meaning this test strongly rejects the null hypothesis of no fit.
 Thus, I conclude that our observed dataset for genus Danaus matches with the provided, predicted average butterfly lifecycle durations.
