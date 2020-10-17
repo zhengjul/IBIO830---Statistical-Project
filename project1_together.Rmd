@@ -74,8 +74,34 @@ ggplot(butterfly_data, aes(x=metamorphosis_stage))+
   labs(x="Metamorphic Stage", y="Number of Samples", title="Metamorphic Stage of Samples")+
   theme_classic()
 ```
+
 There are significantly more samples of organisms in the "butterfly" metamorphic stage than in any of the other metamorphic stages. This may represent a sampling bias in the dataset. Individuals in the "butterfly" stage may be easier for amatuer naturalists to spot or more appealing to photograph and log. In the statistical tests section, we use a chi-squared goodnesss of fit test to test the null hypothesis that our data set does not accurately represent the expected average lifecyle durations of genus Danaus butterflies.
 #FIXME Julia - does this paragraph look correct to you? Please make any changes you feel are needed.
+
+### Metamorphic stage of sample compared to observation date
+```{r metamorphic stage vs date observed}
+
+#plot stage against date of observation
+butterfly_data$month <- substr(butterfly_data$observed_on, 1,2)
+for(i in 1:nrow(butterfly_data)) {
+  month <- butterfly_data$month[i]
+  last_letter <- substr(month, 2,2)
+  if(last_letter == "/") {
+    month <- substr(month, 1,1)
+  }
+  butterfly_data$month[i] <- month
+}
+
+phenotype <- butterfly_data$metamorphosis_stage
+butterfly_data$month <- factor(butterfly_data$month, levels=c("1","2","3","4","5","6","7","8","9","10","11","12"))
+
+ggplot(butterfly_data, aes(x=month, fill=phenotype))+
+  geom_bar()+
+  labs(x="Month", y="Number of Samples", title="Metamorphic Stage of Samples by Month Observed")+
+  theme_classic()
+```
+
+#FIXME Kate/Julia what to say about this plot? What does it tell us?
 
 ### Positional accuracy vs. latitude and longitude
 ```{r plot positional accuracy vs lat & long, fig.width=14, fig.height=7}
@@ -126,9 +152,9 @@ plot(butterfly_data$positional_accuracy ~butterfly_data$longitude,
 #FIXME Julia - I think we need to say what these corrected plots tell us, but I'm not sure what they tell us?
 
 
-## Species distribution across the world
+### Species distribution across the world
 
-### Adding colours qualitatively with a library
+#### Adding colours qualitatively with a library
 ```{r add colours qualitatively}
 butterfly_data$scientific_name <- as.factor(butterfly_data$scientific_name)
 jColors <- with(butterfly_data,
@@ -139,7 +165,7 @@ butterfly_data_scatter <- data.frame(subset(butterfly_data, select = c(latitude,
            matchRetVal = match(butterfly_data$scientific_name, jColors$scientific_name))
 ```
 
-### Plot points onto world map
+#### Plot points onto world map
 ```{r plot points onto world map, fig.width=14, fig.height=9}
 
 plot(getMap(), 
