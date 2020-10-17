@@ -214,3 +214,9 @@ chisq.test(table(butterfly_data$metamorphosis_stage), p = c(5, 24.5, 10.5, 17.5)
 Based on the chi-square goodness of fit test, our p-value 2.2e-16 < 0.005, meaning this test strongly rejects the null hypothesis of no fit.
 Thus, I conclude that our observed dataset for genus Danaus matches with the provided, predicted average butterfly lifecycle durations.
 
+### Kate's Statistical Test
+#FIXME Kate - figure out what would make sense & do it.
+
+## Summary of Results
+#FIXME Kate/Julia fill in 
+
