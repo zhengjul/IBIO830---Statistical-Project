@@ -13,8 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Read in Raw Data
 ```{r input files}
-#setwd("C:\\Dropbox\\Classes\\Classes\\IBIO 830 stats\\project1")
-setwd("~/Desktop/stats/Project1/IBIO830---Statistical-Project")
+setwd("C:\\Dropbox\\Classes\\Classes\\IBIO 830 stats\\project1")
+#setwd("~/Desktop/stats/Project1/IBIO830---Statistical-Project")
 
 # load raw data from csv file
 butterfly_raw <- read.csv("Danaus.csv", header = TRUE)
@@ -93,6 +93,7 @@ ggplot(butterfly_data, aes(x=year, fill=metamorphosis_stage))+
   labs(x="Year", y="Number of Samples", title="Metamorphic Stage of Samples by Year Observed")+
   theme_classic()
 ```
+
 The distribution of samples by year appears to follow the pattern expected by the rise in popularity of the iNaturalist website. We suspect that 2020 has fewer samples (so far) than 2019 because the year is not yet complete.
 
 ```{r metamorphic stage vs month observed}
@@ -117,10 +118,11 @@ ggplot(butterfly_data, aes(x=month_fac, fill=metamorphosis_stage))+
   labs(x="Month", y="Number of Samples", title="Metamorphic Stage of Samples by Month Observed")+
   theme_classic()
 ```
+
 The observations appear to have a bimodal distribution. The first peak is in March, and the second peak is in August. If these two normal distributions exist, they may indicate the peak butterfly seasons in two distinct climates. In the statistical tests, we test the hypothesis that a sample's observation month is related to the latitude of the observation location, because butterflies are most active in warm weather.
 
 #### Positional accuracy vs. latitude and longitude
-Positional accuracy in iNaturalist describes how far away the submitted observations are in meters from the recorded longitude and latitude coordinates. Therefore, it is important for us to look at whether our coordinate information is accurate to where the genus Danaus was observed and remove outliers with extremely poor accuracy (ie those with large positional accuracy values).
+Positional accuracy in iNaturalist describes how far away the submitted observations are in meters from the recorded longitude and latitude coordinates. Therefore, it is important for us to look at whether our coordinate information is accurate to where the genus Danaus was observed and remove outliers with extremely poor accuracy (those with large positional accuracy values).
 
 ```{r plot positional accuracy vs lat & long, fig.width=14, fig.height=7}
 par(mfrow=c(1,2))
@@ -143,7 +145,7 @@ plot(butterfly_data$positional_accuracy ~butterfly_data$longitude,
 
 ```
 
-There are some outliers in our data, in particular in the data points that contain latitude or longitude greater than 30,000 meters away from observations. We clean the data by removing data points that are more than 15,000 meters away from the recorded location.
+There are some outliers in our data, in particular in the data points that contain latitude or longitude greater than 30,000 meters away from observations. We cleaned the data by removing data points that are more than 15,000 meters away from the recorded location.
 
 ```{r plot positional accuracy vs lat & long w/o outliers, fig.width=14, fig.height=7}
 # remove outliers
@@ -167,6 +169,7 @@ plot(butterfly_data$positional_accuracy ~butterfly_data$longitude,
      col = adjustcolor(1,0.4),
      main = "Positional accuracy vs Longitude")
 ```
+
 By removing the outliers, the maximum positional accuracy present in our dataset is improved, and we can be more certain that our dataset's longitude and latitude values are reasonably close to the actual observation locations.
 
 
@@ -193,7 +196,7 @@ plot(getMap(),
 
 # add data points to map
 points(butterfly_data_scatter$longitude, butterfly_data_scatter$latitude, 
-       col=alpha(jColors$color[match(butterfly_data_scatter$scientific_name, jColors$scientific_name)],0.4), 
+       col=alpha(jColors$color[match(butterfly_data_scatter$scientific_name, jColors$scientific_name)],0.5), 
        pch=19,cex=1.3)
 
 # add legend to map
@@ -202,7 +205,8 @@ legend("bottom", inset=c(0,0),
        col = jColors$color, pch = 19, cex=0.7,
        xpd=TRUE, horiz=T)
 ```
-There is a concentration of observations from the USA, in particular of the species Danaus plexippus. Additionally, there is a lack of samples from the eastern continents in the world. Even with this disparity in available data, we still observe differences in the distribution of Danaus species spread across the globe. For example, we see that Danaus petilia is only observed in Australia in this data set. This species is typically found in Australia and tropical countries.
+
+A high proportion of observations comes from the United States, in particular of the species Danaus plexippus. Additionally, there is a lack of samples from the eastern continents in the world. Even with this disparity in available data, we still observe differences in the distribution of Danaus species spread across the globe. For example, we see that Danaus petilia is only observed in Australia in this data set. This species is typically found in Australia and tropical countries.
 
 ## Statistical Tests
 ### Chi-squared goodness of fit test for metamorphic stages
@@ -210,7 +214,7 @@ Based on the number of samples for each metamorphic stage in our data set, we de
 
 First, we found the average duration of butterflies' metamorphic stages at: https://www.joyfulbutterfly.com/life-cycle-of-a-butterfly/
 
-We make the assumption that the following information applies for genus Danaus across the world, time, and region.
+We make the assumption that the following information applies for genus Danaus across the world, time, and species.
 <pre>
 # butterfly life cycle
 
