@@ -11,7 +11,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Read in raw data
+## Read in Raw Data
 ```{r input files}
 #setwd("C:\\Dropbox\\Classes\\Classes\\IBIO 830 stats\\project1")
 setwd("~/Desktop/stats/Project1/IBIO830---Statistical-Project")
@@ -38,7 +38,7 @@ if (!require(ggplot2)) install.packages('ggplot2')
 library(ggplot2)
 ```
 
-## Data cleaning and exploration
+## Data Cleaning and Exploration
 ```{r clean data, echo=TRUE}
 # Rename column where there is a typo 
 names(butterfly_raw)[names(butterfly_raw) == "phyenotype..metamorphosis.stage."] <- "metamorphosis_stage"
@@ -57,18 +57,16 @@ butterfly_data <- butterfly_data[!is.na(butterfly_data$observed_on),]
 ```
 
 ### Initial plotting
-```{r look at structure}
-# look at the structure of the data frame
-str(butterfly_raw)
+```{r look at data}
+# look at the data
 head(butterfly_raw)
 ```
 
 #### Metamorphic stage of samples
-```{r}
+```{r count stage samples}
 # number of samples in each metamorphic stage
 count(butterfly_data, butterfly_data$metamorphosis_stage)
 ```
-
 
 ```{r plot metamorphic stage}
 # Create bar plot of metamorphic stage
@@ -78,7 +76,7 @@ ggplot(butterfly_data, aes(x=metamorphosis_stage))+
   theme_classic()
 ```
 
-There are significantly more samples of organisms in the "butterfly" metamorphic stage than in any of the other metamorphic stages. This may represent a sampling bias in the dataset. Individuals in the "butterfly" stage may be easier for amatuer naturalists to spot, or they may be more appealing to photograph and log. In the statistical tests section, we use a chi-squared goodnesss of fit test to test the null hypothesis that our data set does not accurately represent the expected average lifecyle durations of genus Danaus butterflies.
+There are significantly more samples of organisms in the "butterfly" metamorphic stage than in any of the other metamorphic stages. This may represent a sampling bias in the dataset. Individuals in the "butterfly" stage may be easier for amateur naturalists to spot, or they may be more appealing to photograph and log. In the statistical tests section, we use a chi-squared goodness of fit test to test the null hypothesis that our data set does not accurately fit the expected average lifecyle durations of genus Danaus butterflies.
 
 
 #### Metamorphic stage of sample compared to observation date
@@ -95,10 +93,9 @@ ggplot(butterfly_data, aes(x=year, fill=metamorphosis_stage))+
   labs(x="Year", y="Number of Samples", title="Metamorphic Stage of Samples by Year Observed")+
   theme_classic()
 ```
-The distribution of samples by year appears to follow the pattern expected by the rise in popularity of the iNaturalist website. Because 2020 is not yet complete, it has fewer samples (so far) than 2019, despite the increasing rise in number of users. 
+The distribution of samples by year appears to follow the pattern expected by the rise in popularity of the iNaturalist website. We suspect that 2020 has fewer samples (so far) than 2019 because the year is not yet complete.
 
 ```{r metamorphic stage vs month observed}
-
 # add month of observation to data frame
 butterfly_data$month <- substr(butterfly_data$observed_on, 1,2)
 for(i in 1:nrow(butterfly_data)) {
@@ -112,7 +109,7 @@ for(i in 1:nrow(butterfly_data)) {
 
 # get the number of samples collected in each month
 butterfly_data$month_fac <- factor(butterfly_data$month, levels=c("1","2","3","4","5","6","7","8","9","10","11","12"))
-count(butterfly_data, butterfly_data$month)
+count(butterfly_data, butterfly_data$month_fac)
 
 #plot stage against month of observation
 ggplot(butterfly_data, aes(x=month_fac, fill=metamorphosis_stage))+
@@ -120,14 +117,15 @@ ggplot(butterfly_data, aes(x=month_fac, fill=metamorphosis_stage))+
   labs(x="Month", y="Number of Samples", title="Metamorphic Stage of Samples by Month Observed")+
   theme_classic()
 ```
-The observations appear to have a bimodal distribution. The first peak is in March, and the second peak is in August. If these two normal distributions exist, they may indicate the peak butterfly seasons in two distinct climates. 
+The observations appear to have a bimodal distribution. The first peak is in March, and the second peak is in August. If these two normal distributions exist, they may indicate the peak butterfly seasons in two distinct climates. In the statistical tests, we test the hypothesis that a sample's observation month is related to the latitude of the observation location, because butterflies are most active in warm weather.
 
 #### Positional accuracy vs. latitude and longitude
-Positional accuracy in iNaturalist describes how far away the submitted observations are from the recorded location (longitude and latitude coordinates). This value represents meters away from the recorded location. Therefore, it is important for us to take a look at whether our coordinate information is accurate to where the genus Danaus was observed in nature and drop the outliers with extremely poor accuracy (ie those with large positional accuracy values).
+Positional accuracy in iNaturalist describes how far away the submitted observations are in meters from the recorded longitude and latitude coordinates. Therefore, it is important for us to look at whether our coordinate information is accurate to where the genus Danaus was observed and remove outliers with extremely poor accuracy (ie those with large positional accuracy values).
 
 ```{r plot positional accuracy vs lat & long, fig.width=14, fig.height=7}
 par(mfrow=c(1,2))
 
+# plot positional accuracy vs latitude
 plot(butterfly_data$positional_accuracy ~butterfly_data$latitude, 
      xlab = "Latitude", 
      ylab = "Positional Accuracy", 
@@ -135,6 +133,7 @@ plot(butterfly_data$positional_accuracy ~butterfly_data$latitude,
      col = adjustcolor(1,0.4),
      main = "Positional Accuracy vs Latitude")
 
+# plot positional accuracy vs longitude
 plot(butterfly_data$positional_accuracy ~butterfly_data$longitude, 
      xlab = "Longitude", 
      ylab = "Positional Accuracy", 
@@ -144,16 +143,15 @@ plot(butterfly_data$positional_accuracy ~butterfly_data$longitude,
 
 ```
 
-There are some outliers in our data, in particular in the datapoints that contain latitude or longitude greater than 30,000 meters away from actual observations. We decided to clean the data more thoroughly and remove any data points that are 15000 meters away from the recorded location.
-
+There are some outliers in our data, in particular in the data points that contain latitude or longitude greater than 30,000 meters away from observations. We clean the data by removing data points that are more than 15,000 meters away from the recorded location.
 
 ```{r plot positional accuracy vs lat & long w/o outliers, fig.width=14, fig.height=7}
-
 # remove outliers
 butterfly_data <- butterfly_data %>% filter(positional_accuracy < 15000)
 
 par(mfrow=c(1,2))
 
+# plot positional accuracy vs latitude
 plot(butterfly_data$positional_accuracy ~butterfly_data$latitude, 
      xlab = "Latitude", 
      ylab = "Positional Accuracy", 
@@ -161,6 +159,7 @@ plot(butterfly_data$positional_accuracy ~butterfly_data$latitude,
      col = adjustcolor(1,0.4),
      main = "Positional accuracy vs Latitude")
 
+# plot positional accuracy vs longitude
 plot(butterfly_data$positional_accuracy ~butterfly_data$longitude, 
      xlab = "Longitude", 
      ylab = "Positional Accuracy", 
@@ -168,49 +167,48 @@ plot(butterfly_data$positional_accuracy ~butterfly_data$longitude,
      col = adjustcolor(1,0.4),
      main = "Positional accuracy vs Longitude")
 ```
-By removing the outliers, the y-axis maximum has changed from 30,000 to 12,000 meters. This is a significant improvement of maximum positional accuracy present in our dataset, and it allows us to be more certain that our dataset's longitude and latitude values are reasonably close to the actual observation locations.
+By removing the outliers, the maximum positional accuracy present in our dataset is improved, and we can be more certain that our dataset's longitude and latitude values are reasonably close to the actual observation locations.
 
 
 ### Species distribution across the world
 #### Adding colours qualitatively with a library
 ```{r add colours qualitatively}
 butterfly_data$scientific_name <- as.factor(butterfly_data$scientific_name)
+# set up colors for butterflies
 jColors <- with(butterfly_data,
                 data.frame(scientific_name = levels(scientific_name),
                            color = I(brewer.pal(nlevels(scientific_name), name = 'Accent'))))
-
+# set up new data frame for plot
 butterfly_data_scatter <- data.frame(subset(butterfly_data, select = c(latitude, longitude, scientific_name)),
            matchRetVal = match(butterfly_data$scientific_name, jColors$scientific_name))
 ```
 
 #### Plot points onto world map
 ```{r plot points onto world map, fig.width=14, fig.height=9}
-
+# create map
 plot(getMap(), 
      xlab = "Longitude",     
      ylab = "Latitude",     
      main = 'Genus Danaus (Tiger MilkWeed Butterfly) Observed Across the World')
 
+# add data points to map
 points(butterfly_data_scatter$longitude, butterfly_data_scatter$latitude, 
        col=alpha(jColors$color[match(butterfly_data_scatter$scientific_name, jColors$scientific_name)],0.4), 
        pch=19,cex=1.3)
 
+# add legend to map
 legend("bottom", inset=c(0,0), 
        legend = as.character(jColors$scientific_name),
        col = jColors$color, pch = 19, cex=0.7,
        xpd=TRUE, horiz=T)
 ```
+There is a concentration of observations from the USA, in particular of the species Danaus plexippus. Additionally, there is a lack of samples from the eastern continents in the world. Even with this disparity in available data, we still observe differences in the distribution of Danaus species spread across the globe. For example, we see that Danaus petilia is only observed in Australia in this data set. This species is typically found in Australia and tropical countries.
 
-There is a concentration of observations from the USA, in particular species Danaus plexippus. 
-Additionally, there is a lack of samples from the eastern continents in the world. 
-Even with this great disparity in available data, we can still observe differences in Danaus species (visual colour differences) spread across the globe.
-
-## Statistical tests
+## Statistical Tests
 ### Chi-squared goodness of fit test for metamorphic stages
-We conducted a Chi-squared goodness of fit on our categorical data describing the four metamorphic stages of genus Danaus butterflies.
+Based on the number of samples for each metamorphic stage in our data set, we decided to test the null hypothesis that there is no fit between the proportion of samples in each stage that we see and the expected metamorphic stage durations. This will tell us if our stage data is skewed. Because it is categorical data, we conducted a Chi-squared goodness of fit test.
 
-From the following link, we learned the average duration of butterflies' metamorphic stages. 
-#https://www.joyfulbutterfly.com/life-cycle-of-a-butterfly/
+First, we found the average duration of butterflies' metamorphic stages at: https://www.joyfulbutterfly.com/life-cycle-of-a-butterfly/
 
 We make the assumption that the following information applies for genus Danaus across the world, time, and region.
 <pre>
@@ -226,38 +224,28 @@ Adult butterfly:   2.5 weeks = 17.5 days               17.5/57.5 = 0.3043478
 
 Total lifecycle:   5+24.5+10.5+17.5 = 57.5 days
 </pre>
+
 ```{r chi-squared test}
 chisq.test(table(butterfly_data$metamorphosis_stage), p = c(5, 24.5, 10.5, 17.5)/57.5)
 ```
-Based on the chi-square goodness of fit test, the p-value is 2.2e-16 < 0.005, meaning this test strongly rejects the null hypothesis of no fit.
-Thus, we conclude that our observed dataset for genus Danaus matches with the provided, predicted average butterfly lifecycle durations.
+Based on the chi-square goodness of fit test, our p-value is 2.2e-16, which is less than 0.005, meaning this test strongly rejects the null hypothesis of no fit. Thus, we conclude that our observed dataset for genus Danaus matches with the provided, predicted average butterfly lifecycle durations.
 
 ### Linear regression for observation month vs. latitude
-Above, we suggested that the bimodal distribution of observations by month may be caused by a connection between observation month and observation location. Here, we hypothesize that a sample's observation month is related to the latitude of the observation location, because butterflies are most active in warm weather. 
+In the "Metamorphic stage of sample compared to observation date" section, we suggested that the apparent bimodal distribution of observations by month may be caused by a connection between observation month and observation location. Here, we hypothesize that a sample's observation month is related to the latitude of the observation location, because butterflies are most active in warm weather.
 
 ```{r month observed vs latitude observed on}
 # linear regression test
 lr <- lm(butterfly_data$month~butterfly_data$latitude)
 summary(lr)
 ```
-Based on the results of the linear regression, we cannot reject the null hypothesis that here is no significant correlation between observation month and latitude. Our p-value of 0.236 is > 0.05. 
+Based on the results of the linear regression, we cannot reject the null hypothesis that here is no significant correlation between observation month and latitude, because our p-value of 0.236 is > 0.05.
 
 ## Summary of Results
-This dataset on genus Danaus contains interesting observations of metamorphosis stages across the world over various months in the year.
+The genus Danaus dataset contains interesting observations of metamorphosis stages around the world and over time. We verified that the proportion of metamorphosis stages in our data fit the expected duration of the stages using a chi-squared goodness of fit test. The resulting p-value of 2.2e-16 allowed us to strongly reject the null hypothesis of no fit.
 
-We plotted 'Metamophoric stage of samples" to explore the dataset and astoundingly, the vast majority of samples were observed adult butterflies rather than in other stages of the butterfly life cycle. Thus, we conducted a chi-squared test on the categorical variable 'metamorphosis_stage' to determine whether the data observations match with the predicted durations of each metamorphosis stage.
+We noticed that the observation months appear to have a bimodal distribution, with the first peak in March and the second peak in August. We hypothesized that these two distributions indicate the peak butterfly seasons in two different climates. Because butterflies are most abundant in warm weather, we tested the null hypothesis that there is no significant correlation between observation month and latitude using a linear regression. Based on the resulting p-value of 0.236, we cannot reject the null hypothesis. This does not mean that latitude has no effect on observation month, only that it does not have a significant effect on it.
 
-Based on the statistical test, 'Chi-squared goodness of fit test', our p-value 2.2e-16 < 0.005, meaning this test strongly rejects the null hypothesis of no fit.
-Thus, we conclude that our observed dataset for genus Danaus matches with the provided, predicted average butterfly lifecycle durations.
-
-Our data analysis has found that the greatest number of recorded observations occur around months 7 to 10 (July to October), with greatest number of records from August.
-Additionally, the observations appear to have a bimodal distribution, with the first peak in March and the second peak in August. We hypothesized that these two distributions indicate the peak butterfly seasons in two differenct climates. 
-
-Because butterflies are most abundant in warm weather, we tested the null hypothesis that there is no significant correlation between observation month and latitude. Based on the results of the linear regression, we cannot reject the null hypothesis, because our p-value of 0.236 is > 0.05. This does not mean that latitude has no effect on observation month, only that it does not have a significant effect on it.
-
-Our dataset contained some outliers with respect to positional accuracy, seen in plots from 'Positional accuracy vs. latitude and longitude'. In iNaturalist, positional accuracy describes how far away in meters the observed butterfly was compared to the actual recorded longitude and latitude values. Therefore, we want to remove outliers that are too far away from the recorded location.
-
-After removing the outliers using positional accuracy as criteria, we plotted 'Species distribution across the world'. We see that there is a concentration of observations from the USA. Additionally, there is a lack thereof from the eastern continents in the world. Even with this great disparity in available data, we can still observe differences in Danaus species (visual colour differences) spread across the globe.
-
-The species that is most recorded is Danaus plexippus. However, due to sparcity of data collected, we are unable to acertain whether this is an artifact of biased sampling or if there are more Danaus plexippus in the world compared to all other genus Danaus species. In future works, we hope to include more samples from all across the world to reduce sampling bias.
+## Contribution Summary
+Kate Skocelas created the metamorphic stages plot and the stages by month and year plots. She also conducted the linear regression test.
+Julia Zheng created the positional accuracy plots and the world map plot. She also conducted the chi-squared goodness of fit test.
 
