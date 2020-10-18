@@ -20,8 +20,8 @@ setwd("~/Desktop/stats/Project1/IBIO830---Statistical-Project")
 butterfly_raw <- read.csv("Danaus.csv", header = TRUE)
 ```
 
-### Load required libraries
 ```{r load libraries, message=FALSE}
+# Load required libraries
 if (!require(RColorBrewer)) install.packages('RColorBrewer')
 library(RColorBrewer)
 
@@ -245,7 +245,7 @@ The genus Danaus dataset contains interesting observations of metamorphosis stag
 
 We noticed that the observation months appear to have a bimodal distribution, with the first peak in March and the second peak in August. We hypothesized that these two distributions indicate the peak butterfly seasons in two different climates. Because butterflies are most abundant in warm weather, we tested the null hypothesis that there is no significant correlation between observation month and latitude using a linear regression. Based on the resulting p-value of 0.236, we cannot reject the null hypothesis. This does not mean that latitude has no effect on observation month, only that it does not have a significant effect on it.
 
-## Contribution Summary
+### Contribution Summary
 Kate Skocelas created the metamorphic stages plot and the stages by month and year plots. She also conducted the linear regression test.
 Julia Zheng created the positional accuracy plots and the world map plot. She also conducted the chi-squared goodness of fit test.
 
